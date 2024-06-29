@@ -1,0 +1,89 @@
+@import "variables";
+@import "mixins";
+
+.dashboard {
+	position: relative;
+
+	.header {
+		@include flex-center();
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: $db-header-height;
+		box-shadow: 0 2px 5px 2px rgba(60, 64, 67, 0.15);
+		background-color: #fff;
+		z-index: 2;
+	}
+
+	.new-table {
+		margin-top: $db-header-height;
+		padding: 1.5rem;
+		background: #dadce0;
+	}
+
+	.view {
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
+	.create {
+		@include flex-center();
+		width: 160px;
+		height: 160px;
+		background: #ffffff;
+		border-radius: 4px;
+		border: 1px solid #dadce0;
+		font-size: 1.5rem;
+		text-decoration: none;
+		color: #000000;
+		transition: all 0.1s;
+
+		&:hover {
+			color: green;
+			border-color: green;
+		}
+	}
+
+	.table {
+		padding: 1rem;
+	}
+
+	.list-header {
+		display: flex;
+		justify-content: space-between;
+		color: #202124;
+		font-weight: bold;
+		font-size: 16px;
+		margin-bottom: 10px;
+		padding: 0 12px;
+	}
+
+	.list {
+		@include clear-list;
+	}
+
+	.record {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 12px 14px 12px 16px;
+		margin-bottom: 10px;
+		transition: all 0.2s;
+
+		&:hover {
+			background: #e6f4ea;
+			border-radius: 25px;
+		}
+
+		a {
+			text-decoration: none;
+			color: #202124;
+			font-size: 14px;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
