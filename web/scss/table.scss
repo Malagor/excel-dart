@@ -1,7 +1,7 @@
 @import "variables";
 @import "mixins";
 
-.excel_table {
+.excel__table {
 	@include absolute( $header-height + $toolbar-height + $formula-height);
 	overflow-x: auto;
 	padding-bottom: 2px;
@@ -16,6 +16,7 @@
 		@include flex-center;
 		@include cell-border;
 		width: $info-cell-width;
+		min-width: $info-cell-width;
 		height: 100%;
 		background-color: #f8f9fa;
 	}

@@ -1,7 +1,7 @@
 @import "variables";
 @import "mixins";
 
-.excel_formula {
+.excel__formula {
 	@include absolute($toolbar-height + $header-height);
 	height: $formula-height;
 	border-bottom: $border;
@@ -26,6 +26,7 @@
 		padding: 4px;
 		font-size: 12px;
 		outline: none;
+		border: none;
 		width: 100%;
 		height: 100%;
 		display: flex;
