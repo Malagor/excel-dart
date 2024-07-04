@@ -4,10 +4,12 @@ version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.1.5
+  sdk: ^3.4.4
 
 # Add regular dependencies here.
 dependencies:
+  either_dart: ^1.0.0
+  web: ^0.5.1
   # path: ^1.8.0
 #  bootstrap_sass: any
 
