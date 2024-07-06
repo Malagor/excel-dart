@@ -5,7 +5,13 @@ import 'node_validator.dart' show htmlValidator;
 class Dom {
   late final Element nativeElement;
 
-  Dom(this.nativeElement);
+  Dom(dynamic nativeElement) {
+    if (nativeElement is Element) {
+      this.nativeElement = nativeElement;
+    } else {
+      throw Exception('$nativeElement is not an Element');
+    }
+  }
 
   Dom.create(String element, [String? classes = '']) {
     nativeElement = Element.tag(element);
@@ -55,8 +61,21 @@ class Dom {
     return nativeElement.className;
   }
 
+  Dom? closest(String selectors) {
+    return Dom(nativeElement.closest(selectors));
+  }
+
+  Map<String,String> get dataset {
+    return nativeElement.dataset;
+  }
+
+  Rectangle<num> get coords {
+    return nativeElement.getBoundingClientRect();
+  }
+
   void on(String eventType, EventListener listener) {
     nativeElement.addEventListener(eventType, listener);
+    nativeElement.on;
   }
 
   void off(String eventType, EventListener listener) {

@@ -13,4 +13,4 @@ class AllowAll implements NodeValidator {
 }
 
 final NodeValidatorBuilder htmlValidator = NodeValidatorBuilder.common()
-  ..allowElement('div', attributes: ['role', 'contenteditable', 'tabindex']);
+  ..allowElement('div', attributes: ['role', 'contenteditable', 'tabindex', 'data-resize', 'data-type']);

@@ -8,7 +8,10 @@ String _createCell([String content = '']) {
 
 String _createColumn([String content = '']) {
   return '''
-    <div class="column">$content</div>
+    <div class="column" data-type="resizable">
+      $content
+      <div class="col-resize" data-resize="col"></div>
+    </div>
   ''';
 }
 
@@ -17,9 +20,14 @@ String _toChar((int, String) entity) {
 }
 
 String _createRow({int? index, String content = ''}) {
+  final String resizer = index != null ? '<div class="row-resize" data-resize="row"></div>' : '';
+
   return '''
   <div class="row">
-    <div class="row-info">${index ?? ''}</div>
+    <div class="row-info">
+      ${index ?? ''}
+     $resizer
+    </div>
 	  <div class="row-data">$content</div>
 	</div>
   ''';
