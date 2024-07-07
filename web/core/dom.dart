@@ -1,6 +1,4 @@
-import 'dart:html';
-
-import 'node_validator.dart' show htmlValidator;
+import 'package:web/web.dart';
 
 class Dom {
   late final Element nativeElement;
@@ -14,12 +12,12 @@ class Dom {
   }
 
   Dom.create(String element, [String? classes = '']) {
-    nativeElement = Element.tag(element);
+    nativeElement = document.createElement(element);
     nativeElement.className = classes ?? '';
   }
 
   Dom.select(String selector) {
-    Element? el = querySelector(selector);
+    Element? el = document.querySelector(selector);
     if (el == null) {
       throw Exception('No element with selector $selector');
     } else {
@@ -28,11 +26,11 @@ class Dom {
   }
 
   set html(String htmlString) {
-    nativeElement.setInnerHtml(htmlString, validator: htmlValidator);
+    nativeElement.innerHTML = htmlString;
   }
 
   String get html {
-    return nativeElement.outerHtml?.trim() ?? '';
+    return nativeElement.outerHTML.trim();
   }
 
   void clear() {
@@ -65,17 +63,16 @@ class Dom {
     return Dom(nativeElement.closest(selectors));
   }
 
-  Map<String,String> get dataset {
-    return nativeElement.dataset;
+  DOMStringMap get dataset {
+    return (nativeElement as HTMLElement).dataset;
   }
 
-  Rectangle<num> get coords {
+  DOMRect get coords {
     return nativeElement.getBoundingClientRect();
   }
 
   void on(String eventType, EventListener listener) {
     nativeElement.addEventListener(eventType, listener);
-    nativeElement.on;
   }
 
   void off(String eventType, EventListener listener) {

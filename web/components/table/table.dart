@@ -1,5 +1,7 @@
 import 'dart:async';
-import 'dart:html';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
+import 'package:web/web.dart';
 
 import '../../core/dom.dart';
 import '../../core/excel_component.dart';
@@ -11,7 +13,7 @@ class Table extends ExcelComponent {
   StreamSubscription<MouseEvent>? _mouseStreamSubscription;
 
   Table() : super(Dom.create('div', Table.className), name: 'Table') {
-    listeners.addAll({'mousedown': onMousedown, 'mouseup': onMouseup});
+    listeners.addAll({'mousedown': onMousedown.toJS, 'mouseup': onMouseup.toJS});
   }
 
   @override
@@ -20,19 +22,19 @@ class Table extends ExcelComponent {
   void onMousedown(Event event) {
     Dom $resizer = Dom(event.target);
 
-    if ($resizer.dataset.containsKey('resize')) {
-      print(($resizer.dataset['resize']));
+    if ($resizer.dataset.has('resize')) {
+      print($resizer.dataset.getProperty('resize'.toJS));
       resizeElement = $resizer;
 
       Dom? $parent = $resizer.closest('[data-type="resizable"]');
       print($parent?.coords);
 
-      _mouseStreamSubscription = document.onMouseMove.listen(onMousemove);
+      document.onmousemove = onMousemove.toJS;
     }
   }
 
   void onMousemove(Event event) {
-    num x = (event as MouseEvent).client.x;
+    num x = (event as MouseEvent).clientX;
     print('x: $x');
     // print(resizeElement?.borderEdge.left);
     // resizeElement?.borderEdge.left = x;
@@ -41,6 +43,6 @@ class Table extends ExcelComponent {
 
   void onMouseup(Event event) {
     print('mouseup');
-    _mouseStreamSubscription?.cancel();
+    document.onmousemove = null;
   }
 }

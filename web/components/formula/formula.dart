@@ -1,4 +1,6 @@
-import 'dart:html';
+import 'dart:js_interop';
+
+import 'package:web/web.dart';
 
 import '../../core/dom.dart';
 import '../../core/excel_component.dart';
@@ -7,7 +9,7 @@ class Formula extends ExcelComponent {
   static const String className = 'excel__formula';
 
   Formula() : super(Dom.create('div', Formula.className), name: 'Formula') {
-    listeners.addAll({'input': onInput});
+    listeners.addAll({'input': onInput.toJS});
   }
 
   @override
@@ -21,7 +23,7 @@ class Formula extends ExcelComponent {
   }
 
   void onInput(Event event) {
-    final DivElement target = event.target as DivElement;
+    final HTMLDivElement target = event.target as HTMLDivElement;
 
     print(target.innerText);
   }
