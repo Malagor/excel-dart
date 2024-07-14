@@ -64,6 +64,7 @@
 		opacity: 0;
 		transition: opacity 0.2s;
 		border-radius: 2px;
+		z-index: 1;
 
 		&:hover {
 			opacity: 1;
@@ -72,6 +73,7 @@
 
 	.col-resize {
 		top: 0;
+		right: -2px;
 		width: 4px;
 
 		&:hover {
@@ -82,6 +84,7 @@
 	.row-resize {
 		left: 0;
 		height: 4px;
+		bottom: -2px;
 
 		&:hover {
 			cursor: row-resize;

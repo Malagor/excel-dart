@@ -1,15 +1,15 @@
 final codes = (A: 'A'.codeUnitAt(0), Z: 'Z'.codeUnitAt(0));
 
-String _createCell([String content = '']) {
+String _createCell((int, String) entity) {
   return '''
-    <div class="cell" contenteditable>$content</div>
+    <div class="cell" data-col=${entity.$1} contenteditable>${entity.$2}</div>
   ''';
 }
 
-String _createColumn([String content = '']) {
+String _createColumn((int, String) entity) {
   return '''
-    <div class="column" data-type="resizable">
-      $content
+    <div class="column" data-type="resizable" data-col='${entity.$1}'>
+      ${entity.$2}
       <div class="col-resize" data-resize="col"></div>
     </div>
   ''';
@@ -40,6 +40,7 @@ String createTable({int rowCount = 20}) {
   final String cols = List.filled(columnsCount + 1, '')
       .indexed
       .map(_toChar)
+      .indexed
       .map(_createColumn)
       .join('');
 
@@ -47,7 +48,7 @@ String createTable({int rowCount = 20}) {
 
   final String cells = List.filled(columnsCount + 1, '')
       .indexed
-      .map((colIdx) => _createCell())
+      .map(_createCell)
       .join('');
 
   for (int i = 0; i < rowCount; i++) {

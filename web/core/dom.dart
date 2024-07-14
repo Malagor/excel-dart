@@ -1,4 +1,8 @@
+import 'dart:js_interop';
+
 import 'package:web/web.dart';
+
+import 'position.dart';
 
 class Dom {
   late final Element nativeElement;
@@ -67,8 +71,14 @@ class Dom {
     return (nativeElement as HTMLElement).dataset;
   }
 
-  DOMRect get coords {
-    return nativeElement.getBoundingClientRect();
+  Position get coords {
+    return Position(nativeElement.getBoundingClientRect());
+  }
+
+  void style((String, String) entity) {
+    (nativeElement as HTMLElement)
+        .attributeStyleMap
+        .set(entity.$1, entity.$2.toJS);
   }
 
   void on(String eventType, EventListener listener) {
