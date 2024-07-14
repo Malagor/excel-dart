@@ -71,7 +71,7 @@ class Dom {
     return (nativeElement as HTMLElement).dataset;
   }
 
-  Position get coords {
+  Position get position {
     return Position(nativeElement.getBoundingClientRect());
   }
 

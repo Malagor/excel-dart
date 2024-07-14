@@ -1,8 +1,8 @@
 final codes = (A: 'A'.codeUnitAt(0), Z: 'Z'.codeUnitAt(0));
 
-String _createCell((int, String) entity) {
-  return '''
-    <div class="cell" data-col=${entity.$1} contenteditable>${entity.$2}</div>
+String Function((int, String)) _createCell(num rowIndex) {
+  return ((int, String) entity) => '''
+    <div class="cell" data-col=${entity.$1} data-row="$rowIndex" contenteditable>${entity.$2}</div>
   ''';
 }
 
@@ -20,10 +20,12 @@ String _toChar((int, String) entity) {
 }
 
 String _createRow({int? index, String content = ''}) {
-  final String resizer = index != null ? '<div class="row-resize" data-resize="row"></div>' : '';
+  final String resizer =
+      index != null ? '<div class="row-resize" data-resize="row"></div>' : '';
+  final String rowIndex = index == null ? '' : '${index - 1}';
 
   return '''
-  <div class="row">
+  <div class="row" data-type="resizable" data-row='$rowIndex'>
     <div class="row-info">
       ${index ?? ''}
      $resizer
@@ -46,13 +48,15 @@ String createTable({int rowCount = 20}) {
 
   rows.add(_createRow(content: cols));
 
-  final String cells = List.filled(columnsCount + 1, '')
-      .indexed
-      .map(_createCell)
-      .join('');
+  String formatRow(num rowIndex) {
+    final String cells =
+        List.filled(columnsCount + 1, '').indexed.map(_createCell(rowIndex)).join('');
+
+    return cells;
+  }
 
   for (int i = 0; i < rowCount; i++) {
-    rows.add(_createRow(index: i + 1, content: cells));
+    rows.add(_createRow(index: i + 1, content: formatRow(i)));
   }
 
   return rows.join('');
