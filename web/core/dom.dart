@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:web/web.dart';
 
 import 'position.dart';
@@ -67,7 +65,12 @@ class Dom {
     return Dom(nativeElement.closest(selectors));
   }
 
-  DOMStringMap get dataset {
+  Iterable<Dom> children(String selectors) {
+    return List.from(nativeElement.querySelectorAll(selectors) as Iterable)
+        .map((node) => Dom(node));
+  }
+
+  DOMStringMap get data {
     return (nativeElement as HTMLElement).dataset;
   }
 
@@ -75,10 +78,12 @@ class Dom {
     return Position(nativeElement.getBoundingClientRect());
   }
 
-  void style((String, String) entity) {
-    (nativeElement as HTMLElement)
-        .attributeStyleMap
-        .set(entity.$1, entity.$2.toJS);
+  void css(Map<String, dynamic> styles) {
+    for (var style in styles.entries) {
+      (nativeElement as HTMLElement)
+          .attributeStyleMap
+          .set(style.key, style.value);
+    }
   }
 
   void on(String eventType, EventListener listener) {
