@@ -1,4 +1,5 @@
-import 'dart:html';
+
+import 'package:web/web.dart';
 
 import 'dom.dart';
 
@@ -15,7 +16,6 @@ abstract class DomListener {
   }
 
   removeDomListeners() {
-    print('removeDomListeners');
     for (final element in listeners.entries) {
       $root.off(element.key, element.value);
     }

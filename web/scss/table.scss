@@ -2,7 +2,7 @@
 @import "mixins";
 
 .excel__table {
-	@include absolute( $header-height + $toolbar-height + $formula-height);
+	@include absolute($header-height + $toolbar-height + $formula-height);
 	overflow-x: auto;
 	padding-bottom: 2px;
 
@@ -15,6 +15,7 @@
 	.row-info {
 		@include flex-center;
 		@include cell-border;
+		position: relative;
 		width: $info-cell-width;
 		min-width: $info-cell-width;
 		height: 100%;
@@ -28,6 +29,7 @@
 	.column {
 		@include flex-center;
 		@include cell-border;
+		position: relative;
 		background-color: #f8f9fa;
 		min-width: 40px;
 		width: $cell-width;
@@ -49,8 +51,64 @@
 
 		&.selected {
 			border: none;
-			outline: 2px solid #3c74ff;
+			outline: 2px solid $accent-color;
 			z-index: 2;
+		}
+	}
+
+	.col-resize, .row-resize {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		background-color: $accent-color;
+		opacity: 0;
+		transition: opacity 0.2s;
+		border-radius: 2px;
+		z-index: 1;
+
+		&:hover {
+			opacity: 1;
+		}
+
+		&.clicked::after {
+			content: '';
+			position: absolute;
+			background-color: $accent-color;
+		}
+
+	}
+
+	.col-resize {
+		top: 0;
+		right: -2px;
+		width: 4px;
+
+		&:hover {
+			cursor: col-resize;
+		}
+
+		&.clicked::after {
+			top: 0;
+			bottom: -5000px;
+			right: 2px;
+			width: 1px;
+		}
+	}
+
+	.row-resize {
+		left: 0;
+		height: 4px;
+		bottom: -2px;
+
+		&:hover {
+			cursor: row-resize;
+		}
+
+		&.clicked::after {
+			bottom: 1px;
+			left: 0;
+			right: -5000px;
+			height: 1px;
 		}
 	}
 }
