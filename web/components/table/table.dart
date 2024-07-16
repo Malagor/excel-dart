@@ -11,25 +11,27 @@ import 'table.template.dart';
 
 class Table extends ExcelComponent {
   static const String className = 'excel__table';
-  Position? parentPosition;
+  late Position parentPosition;
   Dom? $resizableParent;
-  StreamSubscription<MouseEvent>? mouseMoveStream;
+  late Dom $resizer;
+  Set<StreamSubscription<Event>> mouseStreams = {};
 
   Table() : super(Dom.create('div', Table.className), name: 'Table') {
-    listeners
-        .addAll({'mousedown': _onMousedown.toJS, 'mouseup': _onMouseup.toJS});
+    listeners.addAll({'mousedown': _onMousedown.toJS});
   }
 
   @override
   String toHTML() => createTable();
 
-  void _onMousedown(Event event) {
-    Dom $resizer = Dom(event.target);
+  void _onMousedown(MouseEvent event) {
+    $resizer = Dom(event.target);
     String? typeOfResize = $resizer.data['resize'] as String?;
 
     if (typeOfResize == null) {
       return;
     }
+
+    $resizer.addClass('clicked');
 
     $resizableParent = $resizer.closest('[data-type="resizable"]');
 
@@ -39,62 +41,80 @@ class Table extends ExcelComponent {
 
     parentPosition = $resizableParent!.position;
 
-    final String? resizeEntityIndex =
+    final String? indexOfResizeEntity =
         $resizableParent?.data[typeOfResize] as String?;
 
-    if (resizeEntityIndex == null) {
+    if (indexOfResizeEntity == null) {
       throw Exception(
-          'Information about the index of a row or column could not be obtained.');
+          'Information about the index of a row or a column could not be obtained.');
     }
 
-    final nodeList = _getNodeList(typeOfResize, resizeEntityIndex);
-
-    if (nodeList == null) {
-      return;
-    }
-
-    mouseMoveStream = $root.nativeElement.onMouseMove
-        .listen(_onMousemove(typeOfResize, resizeEntityIndex, nodeList));
+    final Element body = document.querySelector('body')!;
+    mouseStreams
+        .add(body.onMouseMove.listen(_getMouseMoveHandler(typeOfResize)));
+    mouseStreams.add(body.onMouseUp
+        .listen(_getMouseUpHandler(typeOfResize, indexOfResizeEntity)));
   }
 
-  _onMousemove(String type, String indexEntity, Iterable<Dom> nodeList) {
-    return (Event event) {
-      switch (type) {
+  Null Function(MouseEvent event) _getMouseMoveHandler(String typeOfResize) {
+    return (MouseEvent event) {
+      switch (typeOfResize) {
         case 'col':
-          parentPosition!.target = (event as MouseEvent).pageX;
-          _resizeRowOrColumn('col', parentPosition!.calculateWidth(), nodeList);
-
+          parentPosition.target = event.pageX;
+          $resizer.css({'right': '${-(parentPosition.deltaX + 2)}px'});
         case 'row':
-          parentPosition!.target = (event as MouseEvent).pageY;
-          _resizeRowOrColumn(
-              'row', parentPosition!.calculateHeight(), nodeList);
-
-        default:
-          throw Exception('Resize type is wrong!');
+          parentPosition.target = event.pageY;
+          $resizer.css({'bottom': '${-(parentPosition.deltaY + 2)}px'});
       }
     };
   }
 
-  void _onMouseup(Event event) {
-    mouseMoveStream?.cancel();
+  Null Function(MouseEvent eventt) _getMouseUpHandler(
+      String typeOfResize, String indexOfResizeEntity) {
+    return (MouseEvent event) {
+      _resizeEntity(typeOfResize, indexOfResizeEntity);
+      _resetResizer(typeOfResize);
+      _unsubscribeStreams();
+    };
   }
 
-  Iterable<Dom>? _getNodeList(String type, String indexEntity) {
-    switch (type) {
+  void _resizeEntity(String typeOfResize, String indexOfResizeEntity) {
+    switch (typeOfResize) {
       case 'col':
-        return $root.children('[data-col="$indexEntity"]');
+        final Iterable<Dom> nodeList =
+            $root.findAll('[data-col="$indexOfResizeEntity"]');
+        if (nodeList.isEmpty) {
+          return;
+        }
+        _resizeColumn(nodeList, parentPosition.calculateWidth());
+
       case 'row':
-        return $root.children('.row[data-row="$indexEntity"]');
-      default:
-        return null;
+        final Dom $node = $root.find('.row[data-row="$indexOfResizeEntity"]');
+        _resizeRow($node, parentPosition.calculateHeight());
     }
   }
 
-  void _resizeRowOrColumn(String type, num newSize, Iterable<Dom> nodeList) {
-    final property = type == 'col' ? 'width' : 'height';
-
+  void _resizeColumn(Iterable<Dom> nodeList, num newSize) {
     for (final element in nodeList) {
-      element.css({property: '${newSize}px'});
+      element.css({'width': '${newSize}px'});
     }
+  }
+
+  void _resizeRow(Dom $node, num newSize) {
+    $node.css({'height': '${newSize}px'});
+  }
+
+  void _unsubscribeStreams() {
+    for (final event in mouseStreams) {
+      event.cancel();
+    }
+    mouseStreams.clear();
+  }
+
+  void _resetResizer(String typeOfResize) {
+    final sizeProperty = typeOfResize == 'col' ? 'right' : 'bottom';
+
+    $resizer.css({sizeProperty: '-2px'});
+    $resizer.removeClass('clicked');
   }
 }

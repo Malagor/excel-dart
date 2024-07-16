@@ -69,6 +69,13 @@
 		&:hover {
 			opacity: 1;
 		}
+
+		&.clicked::after {
+			content: '';
+			position: absolute;
+			background-color: $accent-color;
+		}
+
 	}
 
 	.col-resize {
@@ -79,6 +86,13 @@
 		&:hover {
 			cursor: col-resize;
 		}
+
+		&.clicked::after {
+			top: 0;
+			bottom: -5000px;
+			right: 2px;
+			width: 1px;
+		}
 	}
 
 	.row-resize {
@@ -88,6 +102,13 @@
 
 		&:hover {
 			cursor: row-resize;
+		}
+
+		&.clicked::after {
+			bottom: 1px;
+			left: 0;
+			right: -5000px;
+			height: 1px;
 		}
 	}
 }

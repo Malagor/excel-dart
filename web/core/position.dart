@@ -2,15 +2,20 @@ import 'package:web/web.dart';
 
 class Position {
   late final DOMRect _rect;
-  late num target = 0;
+  num? target;
 
-  Position(this._rect): target = _rect.right;
+  Position(this._rect);
 
-  DOMRect get rect {
-    return _rect;
+  num calculateWidth() => _rect.width + (target ?? _rect.right) - _rect.right;
+
+  num calculateHeight() => _rect.height + (target ?? _rect.bottom) - _rect.bottom;
+
+  num get deltaY {
+    return (target ?? _rect.bottom) - _rect.bottom;
   }
 
-  num calculateWidth() => _rect.width + target - _rect.right;
+  num get deltaX {
+    return (target ?? _rect.right) - _rect.right;
+  }
 
-  num calculateHeight() => _rect.height + target - _rect.bottom;
 }

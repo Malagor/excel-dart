@@ -53,21 +53,25 @@ class Dom {
     nativeElement.append(innerNode);
   }
 
-  set classes(String className) {
-    nativeElement.className = className;
+  void addClass(String className) {
+    nativeElement.classList.add(className);
   }
 
-  String get classes {
-    return nativeElement.className;
+  void removeClass(String className) {
+    nativeElement.classList.remove(className);
   }
 
   Dom? closest(String selectors) {
     return Dom(nativeElement.closest(selectors));
   }
 
-  Iterable<Dom> children(String selectors) {
+  Iterable<Dom> findAll(String selectors) {
     return List.from(nativeElement.querySelectorAll(selectors) as Iterable)
         .map((node) => Dom(node));
+  }
+
+  Dom find(String selector) {
+    return Dom(nativeElement.querySelector(selector));
   }
 
   DOMStringMap get data {
