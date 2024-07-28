@@ -35,7 +35,7 @@ String _createRow({int? index, String content = ''}) {
   ''';
 }
 
-String createTable({int rowCount = 2}) {
+String createTable({int rowCount = 20}) {
   final int columnsCount = codes.Z - codes.A;
   final rows = [];
 
