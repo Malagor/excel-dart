@@ -1,6 +1,10 @@
+import 'dart:js_interop_unsafe';
+
 import 'package:web/web.dart';
 
+import '../components/table/table.functions.dart';
 import 'position.dart';
+import 'types.dart';
 
 class Dom {
   late final Element nativeElement;
@@ -33,6 +37,14 @@ class Dom {
 
   String get html {
     return nativeElement.outerHTML.trim();
+  }
+
+  set text(String str) {
+    nativeElement.textContent = str;
+  }
+
+  String get text {
+    return nativeElement.textContent?.trim() ?? '';
   }
 
   void clear() {
@@ -78,6 +90,16 @@ class Dom {
     return (nativeElement as HTMLElement).dataset;
   }
 
+  String? get dataId {
+    return data['id'] as String?;
+  }
+
+  CellId? get parsedId {
+    String? id = dataId;
+
+    return (id is String) ? parseCellId(id) : null;
+  }
+
   Position get position {
     return Position(nativeElement.getBoundingClientRect());
   }
@@ -96,5 +118,9 @@ class Dom {
 
   void off(String eventType, EventListener listener) {
     nativeElement.removeEventListener(eventType, listener);
+  }
+
+  void focus() {
+    (nativeElement as HTMLElement).focus();
   }
 }

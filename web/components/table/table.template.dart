@@ -1,22 +1,34 @@
-final codes = (A: 'A'.codeUnitAt(0), Z: 'Z'.codeUnitAt(0));
+import '../../excel.config.dart' as config;
 
 String Function((int, String)) _createCell(num rowIndex) {
   return ((int, String) entity) => '''
-    <div class="cell" data-col=${entity.$1} data-row="$rowIndex" contenteditable>${entity.$2}</div>
+    <div 
+      class="cell" 
+      data-col=${entity.$1} 
+      data-id="$rowIndex:${entity.$1}"
+      data-type="cell"
+      contenteditable>
+        ${entity.$2}
+    </div>
   ''';
 }
 
 String _createColumn((int, String) entity) {
   return '''
-    <div class="column" data-type="resizable" data-col='${entity.$1}'>
+    <div 
+      class="column" 
+      data-type="resizable" 
+      data-col='${entity.$1}'>
       ${entity.$2}
-      <div class="col-resize" data-resize="col"></div>
+      <div 
+        class="col-resize" 
+        data-resize="col"></div>
     </div>
   ''';
 }
 
 String _toChar((int, String) entity) {
-  return String.fromCharCode(codes.A + entity.$1);
+  return String.fromCharCode(config.columnCodes.A + entity.$1);
 }
 
 String _createRow({int? index, String content = ''}) {
@@ -25,7 +37,10 @@ String _createRow({int? index, String content = ''}) {
   final String rowIndex = index == null ? '' : '${index - 1}';
 
   return '''
-  <div class="row" data-type="resizable" data-row='$rowIndex'>
+  <div 
+    class="row" 
+    data-type="resizable" 
+    data-row='$rowIndex'>
     <div class="row-info">
       ${index ?? ''}
      $resizer
@@ -35,11 +50,11 @@ String _createRow({int? index, String content = ''}) {
   ''';
 }
 
-String createTable({int rowCount = 20}) {
-  final int columnsCount = codes.Z - codes.A;
+String createTable({int rowCount = config.maxRowNumbers}) {
+  final int columnNumbers = config.columnNumbers;
   final rows = [];
 
-  final String cols = List.filled(columnsCount + 1, '')
+  final String cols = List.filled(columnNumbers + 1, '')
       .indexed
       .map(_toChar)
       .indexed
@@ -49,8 +64,10 @@ String createTable({int rowCount = 20}) {
   rows.add(_createRow(content: cols));
 
   String formatRow(num rowIndex) {
-    final String cells =
-        List.filled(columnsCount + 1, '').indexed.map(_createCell(rowIndex)).join('');
+    final String cells = List.filled(columnNumbers + 1, '')
+        .indexed
+        .map(_createCell(rowIndex))
+        .join('');
 
     return cells;
   }
