@@ -8,8 +8,7 @@ import '../../core/position.dart';
 
 Set<StreamSubscription<Event>> mouseStreams = {};
 
-void resizeTable(Dom $root, MouseEvent event) {
-  Dom $resizer = Dom(event.target);
+void resizeTable(Dom $root, Dom $resizer) {
   String? typeOfResize = $resizer.data['resize'] as String?;
 
   if (typeOfResize == null) {

@@ -27,4 +27,10 @@ class Excel {
       component.init();
     }
   }
+
+  void destroy() {
+    for (ExcelComponent component in components) {
+      component.destroy();
+    }
+  }
 }
